@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aesthetic Password Hub</title>
+    <!-- daisyUI CSS Component Framework -->
+    <link href="https://jsdelivr.net" rel="stylesheet" type="text/css" />
+    
+    <script src="https://tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="toggle-control-capsule">
+        <span class="toggle-main-title font-bold text-[#3D315B]">Password Generator</span>
+       
+        <input type="checkbox" id="view-toggle" class="toggle toggle-md border-[#3D315B] bg-[#B1EDE8] [--tglbg:#3D315B] checked:bg-[#444B6E] checked:[--tglbg:#B1EDE8]" />
+        <small class="toggle-sub-label text-[#C0A9B0] block text-xs mt-1 font-semibold">Strength Checker</small>
+    </div>
+
+    <div class="tall-viewport-box">
+        <div class="slider-wrapper-deck" id="slider">
+            
+            <div class="feature-pane">
+                <h1>Password Generator</h1>
+                <form method="POST">
+                    <div class="input-group">
+                        <label for="length">Password Length:</label>
+                        <input type="number" id="length" name="length" value="12" min="6" max="32">
+                    </div>
+                    
+                    <div class="aesthetic-checkbox-list">
+                        <label class="custom-checkbox-item label cursor-pointer">
+                            <span class="label-text text-[#F7F0F5] font-semibold">Letters</span> 
+                            <input type="checkbox" name="letters" checked class="checkbox checkbox-lg checkbox-letters border-none" />
+                        </label>
+                        
+                        <label class="custom-checkbox-item label cursor-pointer">
+                            <span class="label-text text-[#F7F0F5] font-semibold">Numbers</span> 
+                            <input type="checkbox" name="numbers" checked class="checkbox checkbox-lg checkbox-numbers border-none" />
+                        </label>
+                        
+                        <label class="custom-checkbox-item label cursor-pointer">
+                            <span class="label-text text-[#F7F0F5] font-semibold">Symbols</span> 
+                            <input type="checkbox" name="symbols" class="checkbox checkbox-lg checkbox-symbols border-none" />
+                        </label>
+                    </div>
+                    
+                    <button type="submit" name="action" value="generate" class="submit-action-btn">Generate Password</button>
+                </form>
+
+                {% if password %}
+                    <div class="interactive-output-bar">
+                        <input type="text" value="{{ password }}" id="generatedPass" readonly class="text-input-field">
+                        <button onclick="copyToClipboard()" class="action-copy-btn" title="Copy Text">
+                            <i class="fa-regular fa-copy"></i> Copy
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="feature-pane">
+                <h1>Strength Checker</h1>
+                <form method="POST">
+                    <div class="input-group">
+                        <label for="password_to_check">Enter Password String:</label>
+                        <input type="text" id="password_to_check" name="password_to_check" placeholder="Type password here...">
+                    </div>
+
+                    <div class="checker-middle-result-zone">
+                        {% if strength %}
+                            <div class="interactive-output-bar justify-center font-bold text-lg">
+                                Rating: &nbsp;<span class="strength-badge">{{ strength }}</span>
+                            </div>
+                        {% else %}
+            
+                            <div class="h-[60px]"></div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" name="action" value="check" class="submit-action-btn">Check Strength Rating</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const toggle = document.getElementById('view-toggle');
+        const slider = document.getElementById('slider');
+
+        toggle.addEventListener('change', function() {
+            if (this.checked) {
+                slider.style.transform = 'translateX(-50%)';
+            } else {
+                slider.style.transform = 'translateX(0%)';
+            }
+        });
+
+        function copyToClipboard() {
+            const copyText = document.getElementById("generatedPass");
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                const btn = document.querySelector('.action-copy-btn');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+                }, 2000);
+            });
+        }
+
+        const hasStrengthResult = "{{ 'true' if strength else 'false' }}";
+        if (hasStrengthResult === "true") {
+            toggle.checked = true;
+            slider.style.transform = 'translateX(-50%)';
+        }
+    </script>
+</body>
+</html>
