@@ -39,3 +39,6 @@ Hold **Ctrl** (or **Cmd** on Mac) and click the link, or simply open Google Chro
 
 ## Status
 - Completed
+
+## Author
+-Lyra Mgaram
